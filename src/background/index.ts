@@ -4,42 +4,48 @@
  */
 
 // Background script entry point
-console.log('ChatPinner background script loaded')
+console.log("ChatPinner background script loaded")
 
 // Listen for messages from content scripts
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log('Background received message:', message)
+  console.log("Background received message:", message)
 
   switch (message.type) {
-    case 'GET_PINNED_CHATS':
+    case "GET_PINNED_CHATS":
       getPinnedChatsFromBackground()
-        .then(chats => sendResponse({ success: true, data: chats }))
-        .catch(error => sendResponse({ success: false, error: error.message }))
+        .then((chats) => sendResponse({ success: true, data: chats }))
+        .catch((error) =>
+          sendResponse({ success: false, error: error.message })
+        )
       return true // Keep message channel open for async response
 
-    case 'SAVE_PINNED_CHAT':
+    case "SAVE_PINNED_CHAT":
       savePinnedChatToBackground(message.payload)
         .then(() => sendResponse({ success: true }))
-        .catch(error => sendResponse({ success: false, error: error.message }))
+        .catch((error) =>
+          sendResponse({ success: false, error: error.message })
+        )
       return true
 
-    case 'REMOVE_PINNED_CHAT':
+    case "REMOVE_PINNED_CHAT":
       removePinnedChatFromBackground(message.payload.chatId)
         .then(() => sendResponse({ success: true }))
-        .catch(error => sendResponse({ success: false, error: error.message }))
+        .catch((error) =>
+          sendResponse({ success: false, error: error.message })
+        )
       return true
 
     default:
-      console.warn('Unknown message type:', message.type)
-      sendResponse({ success: false, error: 'Unknown message type' })
+      console.warn("Unknown message type:", message.type)
+      sendResponse({ success: false, error: "Unknown message type" })
   }
 })
 
 // Extension install/update handling
 chrome.runtime.onInstalled.addListener((details) => {
-  console.log('ChatPinner extension installed/updated:', details.reason)
+  console.log("ChatPinner extension installed/updated:", details.reason)
 
-  if (details.reason === 'install') {
+  if (details.reason === "install") {
     // Initialize default settings
     initializeDefaultSettings()
   }
@@ -48,24 +54,26 @@ chrome.runtime.onInstalled.addListener((details) => {
 // Initialize default settings on first install
 async function initializeDefaultSettings() {
   try {
-    const existingSettings = await chrome.storage.local.get('chatpinner_settings')
+    const existingSettings = await chrome.storage.local.get(
+      "chatpinner_settings"
+    )
     if (!existingSettings.chatpinner_settings) {
       await chrome.storage.local.set({
         chatpinner_settings: {
           autoPin: false,
           maxPins: 50,
-          theme: 'auto'
+          theme: "auto"
         }
       })
     }
   } catch (error) {
-    console.error('Error initializing settings:', error)
+    console.error("Error initializing settings:", error)
   }
 }
 
 // Storage helper functions for background script
 async function getPinnedChatsFromBackground() {
-  const result = await chrome.storage.local.get('chatpinner_pinned_chats')
+  const result = await chrome.storage.local.get("chatpinner_pinned_chats")
   return result.chatpinner_pinned_chats || []
 }
 
@@ -77,6 +85,6 @@ async function savePinnedChatToBackground(chat) {
 
 async function removePinnedChatFromBackground(chatId) {
   const existingChats = await getPinnedChatsFromBackground()
-  const updatedChats = existingChats.filter(chat => chat.id !== chatId)
+  const updatedChats = existingChats.filter((chat) => chat.id !== chatId)
   await chrome.storage.local.set({ chatpinner_pinned_chats: updatedChats })
 }

@@ -1,6 +1,6 @@
-import React from 'react'
-import { createRoot } from 'react-dom/client'
-import styled from 'styled-components'
+import React from "react"
+import { createRoot } from "react-dom/client"
+import styled from "styled-components"
 
 // Main content script for ChatGPT integration
 const ChatPinnerRoot: React.FC = () => {
@@ -28,7 +28,7 @@ const PinnedChatsContainer = styled.div`
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   z-index: 10000;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow: hidden;
 `
 
@@ -62,30 +62,30 @@ const PlaceholderText = styled.p`
 // Function to inject the React app into ChatGPT page
 function injectChatPinner() {
   // Check if we're on ChatGPT and the app isn't already injected
-  if (!window.location.hostname.includes('chat.openai.com')) {
+  if (!window.location.hostname.includes("chat.openai.com")) {
     return
   }
 
-  const existingRoot = document.getElementById('chat-pinner-root')
+  const existingRoot = document.getElementById("chat-pinner-root")
   if (existingRoot) {
     return // Already injected
   }
 
   // Create a container for our React app
-  const container = document.createElement('div')
-  container.id = 'chat-pinner-container'
+  const container = document.createElement("div")
+  container.id = "chat-pinner-container"
   document.body.appendChild(container)
 
   // Create and render the React app
   const root = createRoot(container)
   root.render(<ChatPinnerRoot />)
 
-  console.log('ChatPiner content script injected')
+  console.log("ChatPiner content script injected")
 }
 
 // Inject the app when the page loads
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', injectChatPinner)
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", injectChatPinner)
 } else {
   injectChatPinner()
 }

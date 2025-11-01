@@ -1,4 +1,8 @@
-import { ChatGPTDOMElements, ChatGPTMessage, ChatGPTConversation } from '../../types'
+import type {
+  ChatGPTConversation,
+  ChatGPTDOMElements,
+  ChatGPTMessage
+} from "../../types"
 
 /**
  * Utility functions for interacting with ChatGPT DOM
@@ -6,10 +10,16 @@ import { ChatGPTDOMElements, ChatGPTMessage, ChatGPTConversation } from '../../t
 
 export function getChatGPTDOMElements(): ChatGPTDOMElements {
   return {
-    conversationItems: document.querySelectorAll('[data-testid="conversation-turn"]'),
-    currentConversation: document.querySelector('[data-testid="conversation-turn"]'),
-    messageElements: document.querySelectorAll('[data-message-author-role]'),
-    inputElement: document.getElementById('prompt-textarea') as HTMLTextAreaElement | null
+    conversationItems: document.querySelectorAll(
+      '[data-testid="conversation-turn"]'
+    ),
+    currentConversation: document.querySelector(
+      '[data-testid="conversation-turn"]'
+    ),
+    messageElements: document.querySelectorAll("[data-message-author-role]"),
+    inputElement: document.getElementById(
+      "prompt-textarea"
+    ) as HTMLTextAreaElement | null
   }
 }
 
@@ -21,18 +31,20 @@ export function extractCurrentConversation(): ChatGPTConversation | null {
   }
 
   const messages: ChatGPTMessage[] = []
-  let conversationTitle = 'Untitled Chat'
+  let conversationTitle = "Untitled Chat"
 
   // Extract title from page if available
-  const titleElement = document.querySelector('title')
+  const titleElement = document.querySelector("title")
   if (titleElement) {
-    conversationTitle = titleElement.textContent || 'Untitled Chat'
+    conversationTitle = titleElement.textContent || "Untitled Chat"
   }
 
   elements.messageElements.forEach((element, index) => {
-    const role = element.getAttribute('data-message-author-role') as 'user' | 'assistant'
-    const contentElement = element.querySelector('.prose') || element
-    const content = contentElement?.textContent?.trim() || ''
+    const role = element.getAttribute("data-message-author-role") as
+      | "user"
+      | "assistant"
+    const contentElement = element.querySelector(".prose") || element
+    const content = contentElement?.textContent?.trim() || ""
 
     if (content) {
       messages.push({
@@ -61,10 +73,13 @@ export function getCurrentChatUrl(): string {
 }
 
 export function isInChatGPT(): boolean {
-  return window.location.hostname.includes('chat.openai.com')
+  return window.location.hostname.includes("chat.openai.com")
 }
 
-export function waitForElement(selector: string, timeout = 5000): Promise<Element | null> {
+export function waitForElement(
+  selector: string,
+  timeout = 5000
+): Promise<Element | null> {
   return new Promise((resolve) => {
     const element = document.querySelector(selector)
     if (element) {
@@ -97,15 +112,15 @@ export function observeChatGPTChanges(callback: () => void): MutationObserver {
     let shouldCallback = false
 
     mutations.forEach((mutation) => {
-      if (mutation.type === 'childList') {
+      if (mutation.type === "childList") {
         // Check if relevant parts of ChatGPT UI changed
         const addedNodes = Array.from(mutation.addedNodes)
-        const hasChatChanges = addedNodes.some(node => {
+        const hasChatChanges = addedNodes.some((node) => {
           if (node instanceof Element) {
             return (
-              node.querySelector('[data-message-author-role]') ||
+              node.querySelector("[data-message-author-role]") ||
               node.querySelector('[data-testid="conversation-turn"]') ||
-              node.matches('[data-message-author-role]') ||
+              node.matches("[data-message-author-role]") ||
               node.matches('[data-testid="conversation-turn"]')
             )
           }

@@ -2,7 +2,7 @@
 export interface ChatGPTMessage {
   id: string
   content: string
-  role: 'user' | 'assistant'
+  role: "user" | "assistant"
   timestamp: number
 }
 
@@ -37,7 +37,7 @@ export interface ChatPinnerStorage {
   settings: {
     autoPin: boolean
     maxPins: number
-    theme: 'light' | 'dark' | 'auto'
+    theme: "light" | "dark" | "auto"
   }
 }
 
@@ -66,19 +66,22 @@ export interface ChatGPTDOMElements {
 
 // Event types
 export interface ChatPinterEvent {
-  type: 'chat-pin' | 'chat-unpin' | 'chat-open' | 'settings-update'
+  type: "chat-pin" | "chat-unpin" | "chat-open" | "settings-update"
   payload: any
   timestamp: number
 }
 
 // Action types for useReducer
 export type ChatPinnerAction =
-  | { type: 'ADD_PINNED_CHAT'; payload: PinnedChat }
-  | { type: 'REMOVE_PINNED_CHAT'; payload: string }
-  | { type: 'UPDATE_PINNED_CHAT'; payload: { id: string; updates: Partial<PinnedChat> } }
-  | { type: 'SET_SEARCH_QUERY'; payload: string }
-  | { type: 'TOGGLE_VISIBILITY' }
-  | { type: 'LOAD_PINNED_CHATS'; payload: PinnedChat[] }
+  | { type: "ADD_PINNED_CHAT"; payload: PinnedChat }
+  | { type: "REMOVE_PINNED_CHAT"; payload: string }
+  | {
+      type: "UPDATE_PINNED_CHAT"
+      payload: { id: string; updates: Partial<PinnedChat> }
+    }
+  | { type: "SET_SEARCH_QUERY"; payload: string }
+  | { type: "TOGGLE_VISIBILITY" }
+  | { type: "LOAD_PINNED_CHATS"; payload: PinnedChat[] }
 
 // Chrome extension message types
 export interface ChromeMessage {

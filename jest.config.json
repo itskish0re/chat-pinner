@@ -1,8 +1,17 @@
 {
   "preset": "ts-jest",
   "testEnvironment": "jsdom",
+  "extensionsToTreatAsEsm": [".ts", ".tsx"],
+  "globals": {
+    "ts-jest": {
+      "useESM": true,
+      "tsconfig": {
+        "verbatimModuleSyntax": false
+      }
+    }
+  },
   "setupFilesAfterEnv": ["<rootDir>/tests/setup.ts"],
-  "moduleNameMapping": {
+  "moduleNameMapper": {
     "^~/(.*)$": "<rootDir>/src/$1"
   },
   "testMatch": [

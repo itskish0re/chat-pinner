@@ -1,32 +1,33 @@
-import '@testing-library/jest-dom'
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import "@testing-library/jest-dom"
 
 // Mock Chrome APIs for testing
 const mockChrome = {
   storage: {
     local: {
       get: jest.fn((keys, callback) => {
-        if (typeof keys === 'function') {
+        if (typeof keys === "function") {
           callback = keys
           keys = null
         }
         return Promise.resolve({})
       }),
       set: jest.fn((items, callback) => {
-        if (typeof items === 'function') {
+        if (typeof items === "function") {
           callback = items
           items = null
         }
         return Promise.resolve()
       }),
       remove: jest.fn((keys, callback) => {
-        if (typeof keys === 'function') {
+        if (typeof keys === "function") {
           callback = keys
           keys = null
         }
         return Promise.resolve()
       }),
       clear: jest.fn((callback) => {
-        if (typeof callback === 'function') {
+        if (typeof callback === "function") {
           callback()
         }
         return Promise.resolve()
@@ -43,7 +44,7 @@ const mockChrome = {
   },
   tabs: {
     query: jest.fn((queryInfo, callback) => {
-      if (typeof queryInfo === 'function') {
+      if (typeof queryInfo === "function") {
         callback = queryInfo
         queryInfo = null
       }
@@ -57,11 +58,11 @@ const mockChrome = {
 global.chrome = mockChrome as any
 
 // Mock DOM environment for content scripts
-Object.defineProperty(window, 'location', {
+Object.defineProperty(window, "location", {
   value: {
-    href: 'https://chat.openai.com/',
-    origin: 'https://chat.openai.com',
-    hostname: 'chat.openai.com'
+    href: "https://chatgpt.com/",
+    origin: "https://chatgpt.com",
+    hostname: "chatgpt.com"
   },
   writable: true
 })
