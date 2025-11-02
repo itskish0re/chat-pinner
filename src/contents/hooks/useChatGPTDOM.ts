@@ -108,7 +108,7 @@ export const useChatGPTDOM = () => {
    */
   const extractMessageMetadata = useCallback(
     (messageElement: MessageElement): MessageMetadata | null => {
-      const messageId = extractMessageId(messageElement)
+      const messageId = extractMessageId(messageElement as Element)
       if (!messageId) {
         return null
       }
@@ -122,7 +122,7 @@ export const useChatGPTDOM = () => {
       const allMessages = document.querySelectorAll(
         workingSelectors.message?.container || ""
       )
-      const position = Array.from(allMessages).indexOf(messageElement)
+      const position = Array.from(allMessages).indexOf(messageElement as Element)
 
       // Try to extract author information
       let author: "user" | "assistant" | "system" = "assistant"

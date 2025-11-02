@@ -11,19 +11,9 @@
  */
 export interface MessageElement extends HTMLElement {
   /**
-   * Gets the message ID from data attributes
+   * Message text content (for testing purposes)
    */
-  getAttribute(name: string): string | null;
-
-  /**
-   * Query selector for finding child elements
-   */
-  querySelector(selector: string): Element | null;
-
-  /**
-   * Query selector for finding all matching child elements
-   */
-  querySelectorAll(selector: string): NodeListOf<Element>;
+  textContent: string;
 }
 
 /**

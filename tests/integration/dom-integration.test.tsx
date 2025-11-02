@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, renderHook, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useChatGPTDOM } from '../../src/contents/hooks/useChatGPTDOM';
 import { CHATGPT_SELECTORS } from '../../src/contents/utils/dom-selectors';

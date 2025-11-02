@@ -42,7 +42,7 @@ Object.defineProperty(document, 'title', {
 
 // Import the hook after mocks are set up
 import { useChatGPTDOM } from '../../../src/contents/hooks/useChatGPTDOM';
-import { MessageElement } from '../../../src/types/chatgpt.types';
+import type { MessageElement } from '../../../src/types/chatgpt.types';
 
 describe('useChatGPTDOM', () => {
   beforeEach(() => {
@@ -89,7 +89,7 @@ describe('useChatGPTDOM', () => {
           querySelectorAll: jest.fn(() => []),
           textContent: 'Test message 2'
         }
-      ] as MessageElement[];
+      ] as unknown as MessageElement[];
 
       mockQuerySelector.mockImplementation((selector) => {
         if (selector === '[data-message-id="msg-1"], [data-testid="msg-1"]') {
@@ -139,7 +139,7 @@ describe('useChatGPTDOM', () => {
           return null;
         }),
         textContent: 'Test message content'
-      } as MessageElement;
+      } as unknown as MessageElement;
 
       mockQuerySelector.mockImplementation((selector) => {
         if (selector === '[data-conversation-id]') {
@@ -173,7 +173,7 @@ describe('useChatGPTDOM', () => {
         getAttribute: jest.fn(() => null),
         querySelector: jest.fn(),
         textContent: 'Test content'
-      } as MessageElement;
+      } as unknown as MessageElement;
 
       mockQuerySelector.mockReturnValue(null);
 
@@ -192,8 +192,9 @@ describe('useChatGPTDOM', () => {
       };
 
       const mockMessageElement = {
-        querySelector: jest.fn(() => mockContentElement)
-      } as MessageElement;
+        querySelector: jest.fn(() => mockContentElement),
+        textContent: ''
+      } as unknown as MessageElement;
 
       mockQuerySelector.mockReturnValue([mockMessageElement]);
 
@@ -208,7 +209,7 @@ describe('useChatGPTDOM', () => {
       const mockMessageElement = {
         querySelector: jest.fn(() => null),
         textContent: 'Fallback content'
-      } as MessageElement;
+      } as unknown as MessageElement;
 
       mockQuerySelector.mockReturnValue([mockMessageElement]);
 
@@ -224,8 +225,9 @@ describe('useChatGPTDOM', () => {
     test('should find message by ID in cache', () => {
       const mockMessageElement = {
         getAttribute: jest.fn(() => 'test-message-id'),
-        querySelector: jest.fn()
-      } as MessageElement;
+        querySelector: jest.fn(),
+        textContent: ''
+      } as unknown as MessageElement;
 
       mockQuerySelector.mockReturnValue([mockMessageElement]);
 
@@ -275,7 +277,7 @@ describe('useChatGPTDOM', () => {
         getAttribute: jest.fn(() => 'new-message-id'),
         querySelector: jest.fn(),
         textContent: 'New message'
-      } as MessageElement;
+      } as unknown as MessageElement;
 
       let mutationCallback: ((mutations: MutationRecord[]) => void) | null = null;
 
@@ -300,8 +302,17 @@ describe('useChatGPTDOM', () => {
       if (mutationCallback) {
         const mockMutation = {
           type: 'childList',
-          addedNodes: [document.createElement('div')]
-        } as MutationRecord;
+          addedNodes: [document.createElement('div')],
+          attributeName: null,
+          attributeNamespace: null,
+          nextSibling: null,
+          oldValue: null,
+          previousSibling: null,
+          removedNodes: [],
+          target: document.createElement('div'),
+          propertyName: null,
+          newValue: null
+        } as unknown as MutationRecord;
 
         act(() => {
           mutationCallback([mockMutation]);
@@ -319,7 +330,7 @@ describe('useChatGPTDOM', () => {
         getAttribute: jest.fn(() => 'test-message-id'),
         querySelector: jest.fn(),
         textContent: 'Test message'
-      } as MessageElement;
+      } as unknown as MessageElement;
 
       mockQuerySelector.mockImplementation((selector) => {
         if (selector === '[data-conversation-id]') {

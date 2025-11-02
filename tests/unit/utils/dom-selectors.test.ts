@@ -67,15 +67,21 @@ describe('DOM Selectors', () => {
     test('should return true for valid selector', () => {
       const mockElement = document.createElement('div');
       mockQuerySelector.mockReturnValue(mockElement);
+      // Mock querySelectorAll to return an array with the element
+      const mockQuerySelectorAll = jest.fn().mockReturnValue([mockElement]);
+      document.querySelectorAll = mockQuerySelectorAll;
 
       const result = testSelector('div');
 
       expect(result).toBe(true);
-      expect(mockQuerySelector).toHaveBeenCalledWith('div');
+      expect(mockQuerySelectorAll).toHaveBeenCalledWith('div');
     });
 
     test('should return false for invalid selector', () => {
       mockQuerySelector.mockReturnValue(null);
+      // Mock querySelectorAll to return an empty array
+      const mockQuerySelectorAll = jest.fn().mockReturnValue([]);
+      document.querySelectorAll = mockQuerySelectorAll;
 
       const result = testSelector('.non-existent');
 
@@ -83,9 +89,11 @@ describe('DOM Selectors', () => {
     });
 
     test('should handle selector errors gracefully', () => {
-      mockQuerySelector.mockImplementation(() => {
+      // Mock querySelectorAll to throw error
+      const mockQuerySelectorAll = jest.fn().mockImplementation(() => {
         throw new Error('Invalid selector');
       });
+      document.querySelectorAll = mockQuerySelectorAll;
 
       // Mock console.warn to avoid test output pollution
       const consoleSpy = jest.spyOn(console, 'warn').mockImplementation();
@@ -102,21 +110,22 @@ describe('DOM Selectors', () => {
   describe('getWorkingSelectors', () => {
     test('should return selectors that work', () => {
       // Mock successful selectors
-      mockQuerySelector.mockImplementation((selector) => {
+      const mockQuerySelectorAll = jest.fn().mockImplementation((selector) => {
         if (selector === CHATGPT_SELECTORS.message.container) {
-          return document.createElement('div');
+          return [document.createElement('div')];
         }
         if (selector === CHATGPT_SELECTORS.message.content) {
-          return document.createElement('div');
+          return [document.createElement('div')];
         }
         if (selector === CHATGPT_SELECTORS.actions.container) {
-          return document.createElement('div');
+          return [document.createElement('div')];
         }
         if (selector === CHATGPT_SELECTORS.conversation.container) {
-          return document.createElement('div');
+          return [document.createElement('div')];
         }
-        return null;
+        return [];
       });
+      document.querySelectorAll = mockQuerySelectorAll;
 
       const result = getWorkingSelectors();
 
@@ -128,21 +137,22 @@ describe('DOM Selectors', () => {
 
     test('should use fallback selectors when primary ones fail', () => {
       // Mock primary selectors failing but fallbacks working
-      mockQuerySelector.mockImplementation((selector) => {
+      const mockQuerySelectorAll = jest.fn().mockImplementation((selector) => {
         if (selector === CHATGPT_SELECTORS.message.container) {
-          return null;
+          return [];
         }
         if (selector === CHATGPT_SELECTORS.message.content) {
-          return null;
+          return [];
         }
         if (selector.startsWith(FALLBACK_SELECTORS.message[0])) {
-          return document.createElement('div');
+          return [document.createElement('div')];
         }
         if (selector.startsWith(FALLBACK_SELECTORS.content[0])) {
-          return document.createElement('div');
+          return [document.createElement('div')];
         }
-        return null;
+        return [];
       });
+      document.querySelectorAll = mockQuerySelectorAll;
 
       const result = getWorkingSelectors();
 
@@ -200,9 +210,19 @@ describe('DOM Selectors', () => {
 
   describe('extractConversationId', () => {
     test('should extract conversation ID from URL', () => {
+      // Ensure the URL is properly mocked for this test
+      Object.defineProperty(window, 'location', {
+        value: {
+          hostname: 'chatgpt.com',
+          pathname: '/c/550e8400-e29b-41d4-a716-446655440000',
+          href: 'https://chatgpt.com/c/550e8400-e29b-41d4-a716-446655440000'
+        },
+        writable: true
+      });
+
       const result = extractConversationId();
 
-      expect(result).toBe('test-conversation-id');
+      expect(result).toBe('550e8400-e29b-41d4-a716-446655440000');
     });
 
     test('should extract conversation ID from DOM', () => {

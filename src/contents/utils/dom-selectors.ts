@@ -130,7 +130,7 @@ export const FALLBACK_SELECTORS: FallbackSelectors = {
 export const testSelector = (selector: string): boolean => {
   try {
     const elements = document.querySelectorAll(selector)
-    return elements.length > 0
+    return elements && elements.length > 0
   } catch (error) {
     console.warn(`Invalid selector: ${selector}`, error)
     return false
